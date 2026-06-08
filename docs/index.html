@@ -496,7 +496,7 @@
   <script>
     const APP_NAME = 'Obsidian Vault Reader';
     const DEFAULT_VAULT_LABEL = 'Obsidian';
-    const IGNORED_FILES = new Set(['AGENTS.md', 'package.json', 'package-lock.json', 'server.js']);
+    const IGNORED_FILES = new Set(['AGENTS.md']);
     const app = document.getElementById('app');
     const markdown = window.markdownit
       ? window.markdownit({ html: true, breaks: true, linkify: true, typographer: true })
@@ -661,12 +661,6 @@
         return false;
       }
       if (relPath.startsWith('.git/') || relPath.includes('/.git/')) {
-        return false;
-      }
-      if (relPath.startsWith('node_modules/') || relPath.includes('/node_modules/')) {
-        return false;
-      }
-      if (relPath.startsWith('docs/node_modules/')) {
         return false;
       }
       return !IGNORED_FILES.has(fileName);

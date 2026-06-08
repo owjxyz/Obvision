@@ -1,6 +1,6 @@
 # Obvision
 
-Obvision은 Obsidian vault의 Markdown 파일을 웹에서 읽기 좋게 보여주는 정적 GitHub Pages용 뷰어입니다. `[[wikilink]]`, 문서 검색, 폴더/문서 선택, 개요, 백링크 계산을 브라우저에서 처리합니다.
+Obvision은 Obsidian vault의 Markdown 파일을 웹에서 읽기 좋게 보여주는 정적 GitHub Pages용 뷰어입니다. 문서 검색, 폴더/문서 선택, 개요, 백링크 계산을 브라우저에서 처리합니다.
 
 ## Obsidian Vault에 적용하기
 
@@ -18,9 +18,6 @@ your-vault/
     source.md
   docs/
     index.html
-    server.js
-    package.json
-    package-lock.json
 ```
 
 적용 절차:
@@ -72,27 +69,14 @@ python3 -m http.server 4173
 
 브라우저에서 `http://127.0.0.1:4173/`을 엽니다.
 
-Node 서버 방식으로 기존 동적 뷰어를 확인하려면 다음을 실행합니다.
-
-```bash
-cd docs
-npm install
-npm start
-```
-
-기본 주소는 `http://127.0.0.1:3150/vault`입니다.
-
 ## 동작 방식
 
 - `docs/index.html`: GitHub Pages에서 실행되는 정적 웹앱입니다.
-- `docs/server.js`: 로컬 또는 Node 호스팅 환경에서 사용할 수 있는 기존 서버형 뷰어입니다.
-- `docs/package.json`: 로컬 Node 서버 실행 스크립트와 서버 의존성을 정의합니다.
 
-GitHub Pages는 Node 서버를 실행하지 않습니다. Pages에서 실제로 서비스되는 파일은 `docs/index.html`이며, `server.js`는 로컬 확인이나 별도 Node 호스팅용입니다.
+GitHub Pages에서 실제로 서비스되는 파일은 `docs/index.html`입니다. 브라우저가 GitHub repo의 Markdown 파일 목록과 내용을 읽어 화면을 구성합니다.
 
 ## 주의사항
 
 - GitHub Pages에 올리는 repo가 public이면 vault의 Markdown 내용도 공개됩니다.
 - private repo에서 Pages를 쓰는 경우 GitHub 요금제와 Pages 공개 범위를 확인하세요.
 - 민감한 노트, 첨부파일, 개인 정보는 repo에 포함하지 마세요.
-- `docs/node_modules/`는 커밋하지 않습니다.
