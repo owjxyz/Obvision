@@ -30,33 +30,12 @@ your-vault/
 3. 변경된 파일을 커밋하고 GitHub에 push합니다.
 
 ```bash
-git add README.md docs .gitignore
+git add docs .gitignore
 git commit -m "Set up Obvision GitHub Pages viewer"
 git push
 ```
 
 GitHub Pages에서 실행되는 `docs/index.html`은 현재 GitHub repo의 Markdown 파일을 직접 읽어 화면에 표시합니다. 노트를 추가하거나 수정한 뒤에는 별도 빌드 없이 commit/push만 하면 됩니다.
-
-## 로컬에서 확인하기
-
-정적 GitHub Pages 화면은 `docs/index.html`을 열어서 확인할 수 있습니다. 간단한 로컬 서버로 확인하려면 다음을 실행합니다.
-
-```bash
-cd docs
-python3 -m http.server 4173
-```
-
-브라우저에서 `http://127.0.0.1:4173/`을 엽니다.
-
-Node 서버 방식으로 기존 동적 뷰어를 확인하려면 다음을 실행합니다.
-
-```bash
-cd docs
-npm install
-npm start
-```
-
-기본 주소는 `http://127.0.0.1:3150/vault`입니다.
 
 ## GitHub Pages 설정하기
 
@@ -81,6 +60,27 @@ https://<github-username>.github.io/<repository-name>/
 ```text
 https://<github-username>.github.io/Obvision/
 ```
+
+## 로컬에서 확인하기
+
+정적 GitHub Pages 화면은 `docs/index.html`을 열어서 확인할 수 있습니다. 간단한 로컬 서버로 확인하려면 다음을 실행합니다.
+
+```bash
+cd docs
+python3 -m http.server 4173
+```
+
+브라우저에서 `http://127.0.0.1:4173/`을 엽니다.
+
+Node 서버 방식으로 기존 동적 뷰어를 확인하려면 다음을 실행합니다.
+
+```bash
+cd docs
+npm install
+npm start
+```
+
+기본 주소는 `http://127.0.0.1:3150/vault`입니다.
 
 ## 동작 방식
 
