@@ -1,8 +1,10 @@
 # Obvision
 
-Obvision은 Obsidian vault의 Markdown 파일을 웹에서 읽기 좋게 보여주는 정적 GitHub Pages용 뷰어입니다. 문서 검색, 폴더/문서 선택, 개요, 백링크 계산을 브라우저에서 처리합니다.
+Obsidian vault의 Markdown 파일을 웹에서 읽기 좋게 보여주는 GitHub Pages용 뷰어입니다.
 
-## Obsidian Vault에 적용하기
+문서 검색, 폴더/문서 선택, 개요, 백링크 계산을 브라우저에서 처리합니다.
+
+## Obsidian Vault에 적용
 
 이 repo를 Obsidian vault의 루트로 사용하거나, 기존 vault 안에 이 repo의 파일을 넣어서 사용할 수 있습니다.
 
@@ -34,7 +36,7 @@ git push
 
 GitHub Pages에서 실행되는 `docs/index.html`은 현재 GitHub repo의 Markdown 파일을 직접 읽어 화면에 표시합니다. 노트를 추가하거나 수정한 뒤에는 별도 빌드 없이 commit/push만 하면 됩니다.
 
-## GitHub Pages 설정하기
+## GitHub Pages 설정
 
 GitHub Pages는 `/docs` 폴더를 정적 사이트 루트로 배포하도록 설정합니다.
 
@@ -58,7 +60,7 @@ https://<github-username>.github.io/<repository-name>/
 https://<github-username>.github.io/Obvision/
 ```
 
-## 로컬에서 확인하기
+## 로컬에서 확인
 
 정적 GitHub Pages 화면은 `docs/index.html`을 열어서 확인할 수 있습니다. 간단한 로컬 서버로 확인하려면 다음을 실행합니다.
 
@@ -67,13 +69,7 @@ cd docs
 python3 -m http.server 4173
 ```
 
-브라우저에서 `http://127.0.0.1:4173/`을 엽니다.
-
-## 동작 방식
-
-- `docs/index.html`: GitHub Pages에서 실행되는 정적 웹앱입니다.
-
-GitHub Pages에서 실제로 서비스되는 파일은 `docs/index.html`입니다. 브라우저가 GitHub repo의 Markdown 파일 목록과 내용을 읽어 화면을 구성합니다.
+브라우저에서 `http://127.0.0.1:4173/`을 열어서 확인할 수 있습니다.
 
 ## 주의사항
 
