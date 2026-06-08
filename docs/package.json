@@ -4,7 +4,6 @@
   "private": true,
   "description": "Obsidian-style reader for a vault-mounted web folder",
   "scripts": {
-    "build:pages": "node build-docs.js",
     "start": "node server.js"
   },
   "dependencies": {

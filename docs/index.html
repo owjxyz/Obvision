@@ -494,18 +494,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
   <script>
-    window.__OBVISION_EMBEDDED_NOTES__ = [
-      {
-        "relPath": "README.md",
-        "raw": "\n",
-        "source": "embedded"
-      }
-    ];
-  </script>
-  <script>
     const APP_NAME = 'Obsidian Vault Reader';
     const DEFAULT_VAULT_LABEL = 'Obsidian';
-    const IGNORED_FILES = new Set(['AGENTS.md', 'package.json', 'package-lock.json', 'server.js', 'build-docs.js']);
+    const IGNORED_FILES = new Set(['AGENTS.md', 'package.json', 'package-lock.json', 'server.js']);
     const app = document.getElementById('app');
     const markdown = window.markdownit
       ? window.markdownit({ html: true, breaks: true, linkify: true, typographer: true })
@@ -516,7 +507,7 @@
     let noteByAlias = new Map();
     let backlinks = new Map();
     let tree = null;
-    let loadStatus = 'embedded';
+    let loadStatus = 'GitHub repository notes';
     let vaultLabel = DEFAULT_VAULT_LABEL;
 
     function esc(text) {
@@ -604,12 +595,6 @@
         return { type: 'note', path: params.get('note') || '' };
       }
       return { type: 'home' };
-    }
-
-    function loadNotesFromEmbedded() {
-      return (window.__OBVISION_EMBEDDED_NOTES__ || [])
-        .filter((item) => item.relPath && item.relPath.endsWith('.md'))
-        .map((item) => ({ relPath: item.relPath.replace(/\\/g, '/'), raw: String(item.raw || '') }));
     }
 
     function inferGitHubRepository() {
@@ -778,26 +763,7 @@
       return match ? Number(match[1]) : null;
     }
 
-    function isWeekFolderName(name) {
-      return /^\d+주차$/.test(name);
-    }
-
-    function getWeekNumberFromName(name) {
-      const match = String(name).match(/^(\d+)주차$/);
-      return match ? Number(match[1]) : Number.POSITIVE_INFINITY;
-    }
-
-    function compareWeekFolders(a, b) {
-      const aIsWeek = isWeekFolderName(a.name);
-      const bIsWeek = isWeekFolderName(b.name);
-      if (aIsWeek && bIsWeek) {
-        const diff = getWeekNumberFromName(a.name) - getWeekNumberFromName(b.name);
-        if (diff !== 0) {
-          return diff;
-        }
-      } else if (aIsWeek !== bIsWeek) {
-        return aIsWeek ? -1 : 1;
-      }
+    function compareFolders(a, b) {
       return a.name.localeCompare(b.name, 'ko', { sensitivity: 'base', numeric: true });
     }
 
@@ -827,16 +793,15 @@
       return a.relPath.localeCompare(b.relPath, 'ko', { sensitivity: 'base', numeric: true });
     }
 
-    function getWeekFolders() {
+    function getFolders() {
       const rootFolder = notes.some((note) => note.folder === '.')
         ? { name: '.', path: '', type: 'dir', children: new Map(), notes: notes.filter((note) => note.folder === '.') }
         : null;
-      const weekFolders = [...tree.children.values()].filter((folder) => isWeekFolderName(folder.name)).sort(compareWeekFolders);
-      const otherFolders = [...tree.children.values()].filter((folder) => !isWeekFolderName(folder.name)).sort(compareWeekFolders);
-      return [rootFolder, ...weekFolders, ...otherFolders].filter(Boolean);
+      const folders = [...tree.children.values()].sort(compareFolders);
+      return [rootFolder, ...folders].filter(Boolean);
     }
 
-    function getWeekFolderNotes(folderName) {
+    function getFolderNotes(folderName) {
       if (!folderName || folderName === '.') {
         return notes.filter((note) => note.folder === '.').sort((a, b) => compareFolderNotes(folderName, a, b));
       }
@@ -847,8 +812,8 @@
       return [...folder.notes].sort((a, b) => compareFolderNotes(folderName, a, b));
     }
 
-    function getWeekIntroNote(folderName) {
-      const notesInFolder = getWeekFolderNotes(folderName);
+    function getFolderIntroNote(folderName) {
+      const notesInFolder = getFolderNotes(folderName);
       if (!notesInFolder.length) {
         return null;
       }
@@ -856,8 +821,8 @@
       return exact || notesInFolder[0];
     }
 
-    function getDefaultWeekFolderName() {
-      const folders = getWeekFolders();
+    function getDefaultFolderName() {
+      const folders = getFolders();
       if (folders.length) {
         return folders[0].name;
       }
@@ -865,22 +830,19 @@
     }
 
     function getDefaultNote() {
-      const defaultFolder = getDefaultWeekFolderName();
-      const intro = defaultFolder ? getWeekIntroNote(defaultFolder) : null;
+      const defaultFolder = getDefaultFolderName();
+      const intro = defaultFolder ? getFolderIntroNote(defaultFolder) : null;
       return intro || notes[0] || null;
     }
 
-    function getSelectedWeekFolderName(note) {
-      if (note && isWeekFolderName(note.folder)) {
-        return note.folder;
-      }
+    function getSelectedFolderName(note) {
       if (note && note.folder !== '.') {
         return note.folder;
       }
       if (note && note.folder === '.') {
         return '.';
       }
-      return getDefaultWeekFolderName();
+      return getDefaultFolderName();
     }
 
     function collectWikiTargets(raw, currentRelPathNoExt) {
@@ -1106,10 +1068,10 @@
         `;
     }
 
-    function renderWeekSelect(currentFolderName) {
-      const folders = getWeekFolders();
+    function renderFolderSelect(currentFolderName) {
+      const folders = getFolders();
       const options = folders.map((folder) => {
-        const intro = getWeekIntroNote(folder.name);
+        const intro = getFolderIntroNote(folder.name);
         const target = intro || folder.notes[0] || null;
         const value = target ? noteUrl(target) : '#';
         const selected = folder.name === currentFolderName ? ' selected' : '';
@@ -1121,7 +1083,7 @@
       if (!options) {
         return `
             <label class="control">
-              <span>주차 폴더</span>
+              <span>폴더</span>
               <select disabled><option>Root</option></select>
             </label>
           `;
@@ -1129,8 +1091,8 @@
 
       return `
           <label class="control">
-            <span>주차 폴더</span>
-            <select id="week-select" aria-label="주차 폴더 선택">${options}</select>
+            <span>폴더</span>
+            <select id="folder-select" aria-label="폴더 선택">${options}</select>
           </label>
         `;
     }
@@ -1227,8 +1189,8 @@
 
       const meta = { outgoing: [], headings: [] };
       const contentHtml = renderMarkdown(note.raw, note.relPathNoExt, meta);
-      const selectedFolderName = getSelectedWeekFolderName(note);
-      const notesInFolder = selectedFolderName ? getWeekFolderNotes(selectedFolderName) : [];
+      const selectedFolderName = getSelectedFolderName(note);
+      const notesInFolder = selectedFolderName ? getFolderNotes(selectedFolderName) : [];
       const folder = selectedFolderName && selectedFolderName !== '.' ? tree.children.get(selectedFolderName) : null;
       const folderCount = folder ? folder.notes.length : notesInFolder.length;
 
@@ -1242,7 +1204,7 @@
               </div>
               <div class="hero-meta panel">
                 <div class="control-row">
-                  ${renderWeekSelect(selectedFolderName)}
+                  ${renderFolderSelect(selectedFolderName)}
                   ${renderNoteSelect(notesInFolder, note.relPathNoExt)}
                 </div>
                 <div class="subtle">현재 경로: ${esc(note.relPath)}</div>
@@ -1337,12 +1299,12 @@
     }
 
     function bindControls() {
-      const weekSelect = document.getElementById('week-select');
+      const folderSelect = document.getElementById('folder-select');
       const noteSelect = document.getElementById('note-select');
       const searchForm = document.getElementById('search-form');
 
-      if (weekSelect) {
-        weekSelect.addEventListener('change', (event) => {
+      if (folderSelect) {
+        folderSelect.addEventListener('change', (event) => {
           if (event.target.value) {
             window.location.href = event.target.value;
           }
@@ -1391,18 +1353,13 @@
 
     async function bootstrap() {
       setVaultLabelFromGitHubRepository();
-      const embedded = loadNotesFromEmbedded();
-      rebuildIndexes(embedded, 'embedded notes');
-      renderRoute();
 
       try {
         const remoteNotes = await loadNotesFromGitHub();
-        if (remoteNotes.length) {
-          rebuildIndexes(remoteNotes, 'GitHub repository notes');
-          renderRoute();
-        }
+        rebuildIndexes(remoteNotes, 'GitHub repository notes');
+        renderRoute();
       } catch (error) {
-        loadStatus = `${loadStatus} · GitHub sync unavailable`;
+        rebuildIndexes([], 'GitHub sync unavailable');
         renderRoute();
         console.warn(error);
       }

@@ -289,26 +289,7 @@ function extractLeadingNumber(text) {
   return match ? Number(match[1]) : null;
 }
 
-function isWeekFolderName(name) {
-  return /^\d+주차$/.test(name);
-}
-
-function getWeekNumberFromName(name) {
-  const match = String(name).match(/^(\d+)주차$/);
-  return match ? Number(match[1]) : Number.POSITIVE_INFINITY;
-}
-
-function compareWeekFolders(a, b) {
-  const aIsWeek = isWeekFolderName(a.name);
-  const bIsWeek = isWeekFolderName(b.name);
-  if (aIsWeek && bIsWeek) {
-    const diff = getWeekNumberFromName(a.name) - getWeekNumberFromName(b.name);
-    if (diff !== 0) {
-      return diff;
-    }
-  } else if (aIsWeek !== bIsWeek) {
-    return aIsWeek ? -1 : 1;
-  }
+function compareFolders(a, b) {
   return a.name.localeCompare(b.name, 'ko', { sensitivity: 'base', numeric: true });
 }
 
@@ -338,16 +319,15 @@ function compareFolderNotes(folderName, a, b) {
   return a.relPath.localeCompare(b.relPath, 'en', { sensitivity: 'base' });
 }
 
-function getWeekFolders() {
+function getFolders() {
   const rootFolder = notes.some((note) => note.folder === '.')
     ? { name: '.', path: '', type: 'dir', children: new Map(), notes: notes.filter((note) => note.folder === '.') }
     : null;
-  const weekFolders = [...tree.children.values()].filter((folder) => isWeekFolderName(folder.name)).sort(compareWeekFolders);
-  const otherFolders = [...tree.children.values()].filter((folder) => !isWeekFolderName(folder.name)).sort(compareWeekFolders);
-  return [rootFolder, ...weekFolders, ...otherFolders].filter(Boolean);
+  const folders = [...tree.children.values()].sort(compareFolders);
+  return [rootFolder, ...folders].filter(Boolean);
 }
 
-function getWeekFolderNotes(folderName) {
+function getFolderNotes(folderName) {
   if (!folderName || folderName === '.') {
     return notes.filter((note) => note.folder === '.').sort((a, b) => compareFolderNotes(folderName, a, b));
   }
@@ -358,8 +338,8 @@ function getWeekFolderNotes(folderName) {
   return [...folder.notes].sort((a, b) => compareFolderNotes(folderName, a, b));
 }
 
-function getWeekIntroNote(folderName) {
-  const notesInFolder = getWeekFolderNotes(folderName);
+function getFolderIntroNote(folderName) {
+  const notesInFolder = getFolderNotes(folderName);
   if (!notesInFolder.length) {
     return null;
   }
@@ -367,43 +347,40 @@ function getWeekIntroNote(folderName) {
   return exact || notesInFolder[0];
 }
 
-function getDefaultWeekFolderName() {
-  const weekFolders = getWeekFolders();
-  if (weekFolders.length) {
-    return weekFolders[0].name;
+function getDefaultFolderName() {
+  const folders = getFolders();
+  if (folders.length) {
+    return folders[0].name;
   }
   return '';
 }
 
 function getDefaultNote() {
-  const defaultWeek = getDefaultWeekFolderName();
-  const weekIntro = defaultWeek ? getWeekIntroNote(defaultWeek) : null;
-  if (weekIntro) {
-    return weekIntro;
+  const defaultFolder = getDefaultFolderName();
+  const folderIntro = defaultFolder ? getFolderIntroNote(defaultFolder) : null;
+  if (folderIntro) {
+    return folderIntro;
   }
   return notes[0] || null;
 }
 
-function getSelectedWeekFolderName(note) {
-  if (note && isWeekFolderName(note.folder)) {
-    return note.folder;
-  }
+function getSelectedFolderName(note) {
   if (note && note.folder !== '.') {
     return note.folder;
   }
   if (note && note.folder === '.') {
     return '.';
   }
-  return getDefaultWeekFolderName();
+  return getDefaultFolderName();
 }
 
-function renderWeekSelect(currentWeekFolderName) {
-  const options = getWeekFolders()
+function renderFolderSelect(currentFolderName) {
+  const options = getFolders()
     .map((folder) => {
-      const intro = getWeekIntroNote(folder.name);
+      const intro = getFolderIntroNote(folder.name);
       const target = intro || folder.notes[0] || null;
       const value = target ? noteUrl(target) : '#';
-      const selected = folder.name === currentWeekFolderName ? ' selected' : '';
+      const selected = folder.name === currentFolderName ? ' selected' : '';
       const count = folder.notes.length;
       const label = folder.name === '.' ? 'Root' : folder.name;
       return `<option value="${esc(value)}"${selected}>${esc(label)} (${count})</option>`;
@@ -412,8 +389,8 @@ function renderWeekSelect(currentWeekFolderName) {
 
   return `
     <label class="control">
-      <span>주차 폴더</span>
-      <select id="week-select" aria-label="주차 폴더 선택">
+      <span>폴더</span>
+      <select id="folder-select" aria-label="폴더 선택">
         ${options}
       </select>
     </label>
@@ -440,7 +417,7 @@ function renderNoteSelect(notesInFolder, currentRelPathNoExt) {
 
 function renderNoteLinks(notesInFolder, currentRelPathNoExt) {
   if (!notesInFolder.length) {
-    return '<p class="muted">이 주차에 표시할 문서가 없습니다.</p>';
+    return '<p class="muted">이 폴더에 표시할 문서가 없습니다.</p>';
   }
 
   return `
@@ -955,9 +932,10 @@ function renderApp(note, query = '') {
   const contentHtml = renderMarkdown(note.raw, note.relPathNoExt, meta);
   const incoming = renderBacklinks(note);
   const outline = renderOutline(meta.headings);
-  const selectedWeekFolderName = getSelectedWeekFolderName(note);
-  const notesInFolder = selectedWeekFolderName ? getWeekFolderNotes(selectedWeekFolderName) : [];
-  const weekFolder = selectedWeekFolderName ? tree.children.get(selectedWeekFolderName) : null;
+  const selectedFolderName = getSelectedFolderName(note);
+  const notesInFolder = selectedFolderName ? getFolderNotes(selectedFolderName) : [];
+  const selectedFolder = selectedFolderName && selectedFolderName !== '.' ? tree.children.get(selectedFolderName) : null;
+  const selectedFolderNoteCount = selectedFolder ? selectedFolder.notes.length : notesInFolder.length;
   const searchPanelHtml = renderSearchPanel(query);
   const breadcrumbParts = note.relPathNoExt.split('/');
   const breadcrumbs = breadcrumbParts.map((part, idx, arr) => {
@@ -1328,11 +1306,11 @@ function renderApp(note, query = '') {
             <div class="hero-copy">
               <p class="eyebrow">${esc(VAULT_LABEL)} Vault</p>
               <h1>Obsidian 읽기모드 뷰어</h1>
-              <p>주차 폴더를 숫자 순으로 고르고, 같은 화면에서 문서 목록과 읽기 모드를 함께 봅니다. 모바일에서는 하나의 세로 흐름으로 내려오게 정리했습니다.</p>
+              <p>폴더를 고르고, 같은 화면에서 문서 목록과 읽기 모드를 함께 봅니다. 모바일에서는 하나의 세로 흐름으로 내려오게 정리했습니다.</p>
             </div>
             <div class="hero-meta panel">
               <div class="control-row">
-                ${renderWeekSelect(selectedWeekFolderName)}
+                ${renderFolderSelect(selectedFolderName)}
                 ${renderNoteSelect(notesInFolder, note.relPathNoExt)}
               </div>
               <div class="subtle">현재 경로: ${esc(note.relPath)}</div>
@@ -1370,8 +1348,8 @@ function renderApp(note, query = '') {
           <section class="panel note-links-panel">
             <div class="folder-summary">
               <div>
-                <strong>${esc(selectedWeekFolderName === '.' ? 'Root' : selectedWeekFolderName || 'Root')}</strong>
-                <div class="subtle">${weekFolder ? `${weekFolder.notes.length}개 문서` : '선택된 주차 폴더가 없습니다.'}</div>
+                <strong>${esc(selectedFolderName === '.' ? 'Root' : selectedFolderName || 'Root')}</strong>
+                <div class="subtle">${selectedFolderNoteCount}개 문서</div>
               </div>
               <div class="subtle">${notes.length} notes · ${meta.outgoing.length} outgoing links</div>
             </div>
@@ -1380,10 +1358,10 @@ function renderApp(note, query = '') {
         </section>
       </main>
       <script>
-        const weekSelect = document.getElementById('week-select');
+        const folderSelect = document.getElementById('folder-select');
         const noteSelect = document.getElementById('note-select');
-        if (weekSelect) {
-          weekSelect.addEventListener('change', (event) => {
+        if (folderSelect) {
+          folderSelect.addEventListener('change', (event) => {
             if (event.target.value) {
               window.location.href = event.target.value;
             }
