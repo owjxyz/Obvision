@@ -1,0 +1,12 @@
+{
+  "name": "obsidian-vault-reader",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Obsidian-style reader for a vault-mounted web folder",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0"
+  }
+}
