@@ -497,14 +497,14 @@
     window.__OBVISION_EMBEDDED_NOTES__ = [
       {
         "relPath": "README.md",
-        "raw": "\n",
+        "raw": "# Obvision\n\nObvision은 Obsidian vault의 Markdown 파일을 웹에서 읽기 좋게 보여주는 정적 GitHub Pages용 뷰어입니다. `[[wikilink]]`, 문서 검색, 폴더/문서 선택, 개요, 백링크 계산을 브라우저에서 처리합니다.\n\n## Obsidian Vault에 적용하기\n\n이 repo를 Obsidian vault의 루트로 사용하거나, 기존 vault 안에 이 repo의 파일을 넣어서 사용할 수 있습니다.\n\n권장 구조는 다음과 같습니다.\n\n```text\nyour-vault/\n  README.md\n  1주차/\n    1주차.md\n    01 첫 문서.md\n  2주차/\n    2주차.md\n  docs/\n    index.html\n    package.json\n    package-lock.json\n    build-docs.js\n    server.js\n```\n\n적용 절차:\n\n1. 이 repo를 Obsidian vault 루트에 둡니다.\n2. 공개할 Markdown 노트를 repo 안에 포함합니다.\n3. `docs` 폴더로 이동해 의존성을 설치합니다.\n\n```bash\ncd docs\nnpm install\n```\n\n4. Markdown 파일을 `docs/index.html` 안에 embedded 데이터로 반영합니다.\n\n```bash\nnpm run build:pages\n```\n\n5. 변경된 파일을 커밋하고 GitHub에 push합니다.\n\n```bash\ngit add README.md docs .gitignore\ngit commit -m \"Set up Obvision GitHub Pages viewer\"\ngit push\n```\n\n`npm run build:pages`는 repo 안의 `.md` 파일을 읽어 `docs/index.html`에 포함합니다. GitHub Pages에서 GitHub API 접근이 실패해도 embedded 데이터로 기본 동작할 수 있게 하기 위한 단계입니다. 노트를 추가하거나 수정한 뒤에는 다시 실행하세요.\n\n## 로컬에서 확인하기\n\n정적 GitHub Pages 화면은 `docs/index.html`을 열어서 확인할 수 있습니다. 간단한 로컬 서버로 확인하려면 다음을 실행합니다.\n\n```bash\ncd docs\npython3 -m http.server 4173\n```\n\n브라우저에서 `http://127.0.0.1:4173/`을 엽니다.\n\nNode 서버 방식으로 기존 동적 뷰어를 확인하려면 다음을 실행합니다.\n\n```bash\ncd docs\nnpm start\n```\n\n기본 주소는 `http://127.0.0.1:3150/vault`입니다.\n\n## GitHub Pages 설정\n\nGitHub Pages는 `/docs` 폴더를 정적 사이트 루트로 배포하도록 설정합니다.\n\n1. GitHub repo 페이지로 이동합니다.\n2. `Settings`를 엽니다.\n3. 왼쪽 메뉴에서 `Pages`를 선택합니다.\n4. `Build and deployment`에서 `Source`를 `Deploy from a branch`로 선택합니다.\n5. `Branch`를 배포할 브랜치로 선택합니다. 보통 `main`입니다.\n6. 폴더를 `/docs`로 선택합니다.\n7. `Save`를 누릅니다.\n\n배포가 완료되면 보통 다음 형식의 URL에서 확인할 수 있습니다.\n\n```text\nhttps://\u003cgithub-username\u003e.github.io/\u003crepository-name\u003e/\n```\n\n이 repo 이름이 `Obvision`이라면 예시는 다음과 같습니다.\n\n```text\nhttps://\u003cgithub-username\u003e.github.io/Obvision/\n```\n\n## 동작 방식\n\n- `docs/index.html`: GitHub Pages에서 실행되는 정적 웹앱입니다.\n- `docs/build-docs.js`: repo 안의 Markdown 파일을 수집해 `docs/index.html`에 embedded note 데이터로 삽입합니다.\n- `docs/server.js`: 로컬 또는 Node 호스팅 환경에서 사용할 수 있는 기존 서버형 뷰어입니다.\n- `docs/package.json`: 빌드와 로컬 서버 실행 스크립트를 정의합니다.\n\nGitHub Pages는 Node 서버를 실행하지 않습니다. Pages에서 실제로 서비스되는 파일은 `docs/index.html`이며, `server.js`는 로컬 확인이나 별도 Node 호스팅용입니다.\n\n## 주의사항\n\n- GitHub Pages에 올리는 repo가 public이면 vault의 Markdown 내용도 공개됩니다.\n- private repo에서 Pages를 쓰는 경우 GitHub 요금제와 Pages 공개 범위를 확인하세요.\n- 민감한 노트, 첨부파일, 개인 정보는 repo에 포함하지 마세요.\n- `docs/node_modules/`는 커밋하지 않습니다.\n",
         "source": "embedded"
       }
     ];
   </script>
   <script>
     const APP_NAME = 'Obsidian Vault Reader';
-    const VAULT_LABEL = 'Vault';
+    const VAULT_LABEL = 'Obsidian';
     const IGNORED_FILES = new Set(['AGENTS.md', 'package.json', 'package-lock.json', 'server.js', 'build-docs.js']);
     const app = document.getElementById('app');
     const markdown = window.markdownit
@@ -822,11 +822,12 @@
     }
 
     function getWeekFolders() {
+      const rootFolder = notes.some((note) => note.folder === '.')
+        ? { name: '.', path: '', type: 'dir', children: new Map(), notes: notes.filter((note) => note.folder === '.') }
+        : null;
       const weekFolders = [...tree.children.values()].filter((folder) => isWeekFolderName(folder.name)).sort(compareWeekFolders);
-      if (weekFolders.length) {
-        return weekFolders;
-      }
-      return [...tree.children.values()].sort(compareWeekFolders);
+      const otherFolders = [...tree.children.values()].filter((folder) => !isWeekFolderName(folder.name)).sort(compareWeekFolders);
+      return [rootFolder, ...weekFolders, ...otherFolders].filter(Boolean);
     }
 
     function getWeekFolderNotes(folderName) {
@@ -854,7 +855,7 @@
       if (folders.length) {
         return folders[0].name;
       }
-      return notes.some((note) => note.folder === '.') ? '.' : '';
+      return '';
     }
 
     function getDefaultNote() {
@@ -869,6 +870,9 @@
       }
       if (note && note.folder !== '.') {
         return note.folder;
+      }
+      if (note && note.folder === '.') {
+        return '.';
       }
       return getDefaultWeekFolderName();
     }
@@ -1086,7 +1090,7 @@
                 type="search"
                 name="q"
                 value="${esc(trimmed)}"
-                placeholder="제목·본문·링크에서 검색: visual literacy, Buddha, 1주차"
+                placeholder="제목·본문·링크에서 키워드 검색"
                 autocomplete="off"
                 spellcheck="false"
               />
@@ -1104,14 +1108,15 @@
         const value = target ? noteUrl(target) : '#';
         const selected = folder.name === currentFolderName ? ' selected' : '';
         const count = folder.notes.length;
-        return `<option value="${esc(value)}"${selected}>${esc(folder.name)} (${count})</option>`;
+        const label = folder.name === '.' ? 'Root' : folder.name;
+        return `<option value="${esc(value)}"${selected}>${esc(label)} (${count})</option>`;
       }).join('');
 
       if (!options) {
         return `
             <label class="control">
               <span>주차 폴더</span>
-              <select disabled><option>폴더 없음</option></select>
+              <select disabled><option>Root</option></select>
             </label>
           `;
       }
@@ -1267,7 +1272,7 @@
             <section class="panel">
               <div class="folder-summary">
                 <div>
-                  <strong>${esc(selectedFolderName === '.' ? '루트' : selectedFolderName || '폴더 없음')}</strong>
+                  <strong>${esc(selectedFolderName === '.' ? 'Root' : selectedFolderName || 'Root')}</strong>
                   <div class="subtle">${folderCount}개 문서</div>
                 </div>
                 <div class="subtle">${notes.length} notes · ${meta.outgoing.length} outgoing links</div>

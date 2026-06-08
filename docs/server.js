@@ -8,7 +8,7 @@ const VAULT_ROOT = process.env.VAULT_ROOT ? path.resolve(process.env.VAULT_ROOT)
 const PORT = Number(process.env.PORT || 3150);
 const BASE_PATH = normalizeBasePath(process.env.BASE_PATH || '/vault');
 const APP_NAME = process.env.SITE_NAME || 'Obsidian Vault Reader';
-const VAULT_LABEL = process.env.VAULT_LABEL || 'Vault';
+const VAULT_LABEL = process.env.VAULT_LABEL || 'Obsidian';
 
 const md = new MarkdownIt({
   html: true,
@@ -339,10 +339,18 @@ function compareFolderNotes(folderName, a, b) {
 }
 
 function getWeekFolders() {
-  return [...tree.children.values()].filter((folder) => isWeekFolderName(folder.name)).sort(compareWeekFolders);
+  const rootFolder = notes.some((note) => note.folder === '.')
+    ? { name: '.', path: '', type: 'dir', children: new Map(), notes: notes.filter((note) => note.folder === '.') }
+    : null;
+  const weekFolders = [...tree.children.values()].filter((folder) => isWeekFolderName(folder.name)).sort(compareWeekFolders);
+  const otherFolders = [...tree.children.values()].filter((folder) => !isWeekFolderName(folder.name)).sort(compareWeekFolders);
+  return [rootFolder, ...weekFolders, ...otherFolders].filter(Boolean);
 }
 
 function getWeekFolderNotes(folderName) {
+  if (!folderName || folderName === '.') {
+    return notes.filter((note) => note.folder === '.').sort((a, b) => compareFolderNotes(folderName, a, b));
+  }
   const folder = tree.children.get(folderName);
   if (!folder) {
     return [];
@@ -364,8 +372,7 @@ function getDefaultWeekFolderName() {
   if (weekFolders.length) {
     return weekFolders[0].name;
   }
-  const folders = [...tree.children.values()].sort(compareWeekFolders);
-  return folders[0]?.name || '';
+  return '';
 }
 
 function getDefaultNote() {
@@ -381,6 +388,12 @@ function getSelectedWeekFolderName(note) {
   if (note && isWeekFolderName(note.folder)) {
     return note.folder;
   }
+  if (note && note.folder !== '.') {
+    return note.folder;
+  }
+  if (note && note.folder === '.') {
+    return '.';
+  }
   return getDefaultWeekFolderName();
 }
 
@@ -392,7 +405,8 @@ function renderWeekSelect(currentWeekFolderName) {
       const value = target ? noteUrl(target) : '#';
       const selected = folder.name === currentWeekFolderName ? ' selected' : '';
       const count = folder.notes.length;
-      return `<option value="${esc(value)}"${selected}>${esc(folder.name)} (${count})</option>`;
+      const label = folder.name === '.' ? 'Root' : folder.name;
+      return `<option value="${esc(value)}"${selected}>${esc(label)} (${count})</option>`;
     })
     .join('');
 
@@ -1356,7 +1370,7 @@ function renderApp(note, query = '') {
           <section class="panel note-links-panel">
             <div class="folder-summary">
               <div>
-                <strong>${esc(selectedWeekFolderName || '폴더 없음')}</strong>
+                <strong>${esc(selectedWeekFolderName === '.' ? 'Root' : selectedWeekFolderName || 'Root')}</strong>
                 <div class="subtle">${weekFolder ? `${weekFolder.notes.length}개 문서` : '선택된 주차 폴더가 없습니다.'}</div>
               </div>
               <div class="subtle">${notes.length} notes · ${meta.outgoing.length} outgoing links</div>
