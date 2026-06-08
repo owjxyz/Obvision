@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-web/node_modules/
+docs/node_modules/
 
 # Environment files
 .env

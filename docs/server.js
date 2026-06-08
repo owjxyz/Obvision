@@ -432,11 +432,11 @@ function renderNoteLinks(notesInFolder, currentRelPathNoExt) {
   return `
     <div class="note-links">
       ${notesInFolder
-        .map((note) => {
-          const active = note.relPathNoExt === currentRelPathNoExt ? ' active' : '';
-          return `<a class="note-link${active}" href="${esc(noteUrl(note))}">${esc(note.basename)}</a>`;
-        })
-        .join('')}
+      .map((note) => {
+        const active = note.relPathNoExt === currentRelPathNoExt ? ' active' : '';
+        return `<a class="note-link${active}" href="${esc(noteUrl(note))}">${esc(note.basename)}</a>`;
+      })
+      .join('')}
     </div>
   `;
 }
@@ -456,7 +456,7 @@ function renderSearchPanel(query) {
           type="search"
           name="q"
           value="${esc(trimmed)}"
-          placeholder="제목·본문·링크에서 검색: visual literacy, Buddha, 1주차"
+          placeholder="제목·본문·링크에서 키워드 검색"
           autocomplete="off"
           spellcheck="false"
         />
@@ -472,16 +472,16 @@ function renderSearchResultsPage(query) {
   const countLabel = trimmed ? `${results.length}개 결과` : '검색어를 입력하면 결과가 표시됩니다.';
   const resultItems = trimmed
     ? results
-        .map(({ note, excerpt }) => {
-          return `
+      .map(({ note, excerpt }) => {
+        return `
             <article class="search-result">
               <a class="search-result-title" href="${esc(noteUrl(note))}">${esc(note.title)}</a>
               <div class="search-result-meta">${esc(note.relPath)}</div>
               ${excerpt ? `<p class="search-result-excerpt">${highlightExcerpt(excerpt, trimmed)}</p>` : ''}
             </article>
           `;
-        })
-        .join('')
+      })
+      .join('')
     : '';
 
   return `<!doctype html>
@@ -746,11 +746,10 @@ function renderSearchResultsPage(query) {
               </div>
               <div class="subtle">전체 md 파일 검색</div>
             </div>
-            ${
-              trimmed
-                ? resultItems || '<p class="muted">일치하는 노트가 없습니다.</p>'
-                : '<p class="muted">검색창에 문자열을 입력하고 검색 버튼을 누르세요.</p>'
-            }
+            ${trimmed
+      ? resultItems || '<p class="muted">일치하는 노트가 없습니다.</p>'
+      : '<p class="muted">검색창에 문자열을 입력하고 검색 버튼을 누르세요.</p>'
+    }
           </section>
         </section>
       </main>
