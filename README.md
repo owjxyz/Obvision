@@ -1,4 +1,4 @@
-# Obvision
+# Obvision 🪨
 
 ### Obsidian Reading Mode on the Web
 
