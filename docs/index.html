@@ -1207,6 +1207,17 @@
 
             ${renderSearchPanel(query)}
 
+            <section class="section-grid">
+              <div class="panel">
+                <h2>개요</h2>
+                ${renderOutline(meta.headings)}
+              </div>
+              <div class="panel">
+                <h2>백링크</h2>
+                ${renderBacklinks(note)}
+              </div>
+            </section>
+
             <div class="note-shell">
               <header class="note-header">
                 <div class="breadcrumbs">${renderBreadcrumbs(note)}</div>
@@ -1219,17 +1230,6 @@
               </header>
               <article class="note-body">${contentHtml}</article>
             </div>
-
-            <section class="section-grid">
-              <div class="panel">
-                <h2>개요</h2>
-                ${renderOutline(meta.headings)}
-              </div>
-              <div class="panel">
-                <h2>백링크</h2>
-                ${renderBacklinks(note)}
-              </div>
-            </section>
 
             <section class="panel">
               <div class="folder-summary">
