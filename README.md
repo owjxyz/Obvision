@@ -1,34 +1,44 @@
-# Obvision 🪨
+# Obvision
 
-### Obsidian Reading Mode on Web
+### Obsidian Reading Mode on the Web
 
-Obsidian vault의 Markdown 파일을 웹에서 읽기 좋게 보여주는 GitHub Pages용 뷰어입니다.
+Obvision is a lightweight GitHub Pages viewer for reading Markdown files from an Obsidian vault on the web.
 
-문서 검색, 폴더/문서 선택, 개요, 백링크 계산을 브라우저에서 처리합니다.
+It runs entirely in the browser and provides document search, folder and note selection, an outline view, and backlink calculation without a separate build step.
 
-## Obsidian Vault에 적용
+[한국어 README 보기](README.ko.md)
 
-이 repo를 Obsidian vault의 루트로 사용하거나, 기존 vault 안에 이 repo의 파일을 넣어서 사용할 수 있습니다.
+## What It Does
 
-권장 구조는 다음과 같습니다.
+- Publishes an Obsidian-style Markdown vault through GitHub Pages.
+- Reads Markdown files directly from the current GitHub repository.
+- Lets readers browse folders and documents from the web UI.
+- Supports client-side search, document outlines, and backlink discovery.
+- Works as a static `docs/index.html` page, so updating notes only requires commit and push.
+
+## Use With an Obsidian Vault
+
+You can use this repository as the root of an Obsidian vault, or copy its files into an existing vault.
+
+A recommended structure looks like this:
 
 ```text
 your-vault/
   README.md
   notes/
     index.md
-    01 첫 문서.md
+    01 first document.md
   references/
     source.md
   docs/
     index.html
 ```
 
-적용 절차:
+Setup steps:
 
-1. 이 repo를 Obsidian vault 루트에 둡니다.
-2. 공개할 Markdown 노트를 repo 안에 포함합니다.
-3. 변경된 파일을 커밋하고 GitHub에 push합니다.
+1. Place this repository at the root of your Obsidian vault.
+2. Include the Markdown notes you want to publish in the repository.
+3. Commit the changed files and push them to GitHub.
 
 ```bash
 git add docs .gitignore
@@ -36,45 +46,45 @@ git commit -m "Set up Obvision GitHub Pages viewer"
 git push
 ```
 
-GitHub Pages에서 실행되는 `docs/index.html`은 현재 GitHub repo의 Markdown 파일을 직접 읽어 화면에 표시합니다. 노트를 추가하거나 수정한 뒤에는 별도 빌드 없이 commit/push만 하면 됩니다.
+The `docs/index.html` page deployed by GitHub Pages reads Markdown files from the current GitHub repository and renders them in the browser. After adding or editing notes, you only need to commit and push the changes.
 
-## GitHub Pages 설정
+## GitHub Pages Setup
 
-GitHub Pages는 `/docs` 폴더를 정적 사이트 루트로 배포하도록 설정합니다.
+Configure GitHub Pages to serve the `/docs` folder as the static site root.
 
-1. GitHub repo 페이지로 이동합니다.
-2. `Settings`를 엽니다.
-3. 왼쪽 메뉴에서 `Pages`를 선택합니다.
-4. `Build and deployment`에서 `Source`를 `Deploy from a branch`로 선택합니다.
-5. `Branch`를 배포할 브랜치로 선택합니다. 보통 `main`입니다.
-6. 폴더를 `/docs`로 선택합니다.
-7. `Save`를 누릅니다.
+1. Open the GitHub repository page.
+2. Go to `Settings`.
+3. Select `Pages` from the left sidebar.
+4. Under `Build and deployment`, set `Source` to `Deploy from a branch`.
+5. Select the branch to deploy, usually `main`.
+6. Select `/docs` as the folder.
+7. Click `Save`.
 
-배포가 완료되면 보통 다음 형식의 URL에서 확인할 수 있습니다.
+After deployment, the site is usually available at:
 
 ```text
 https://<github-username>.github.io/<repository-name>/
 ```
 
-이 repo 이름이 `Obvision`이라면 예시는 다음과 같습니다.
+For a repository named `Obvision`, the URL would look like:
 
 ```text
 https://<github-username>.github.io/Obvision/
 ```
 
-## 로컬에서 확인
+## Local Preview
 
-정적 GitHub Pages 화면은 `docs/index.html`을 열어서 확인할 수 있습니다. 간단한 로컬 서버로 확인하려면 다음을 실행합니다.
+You can open `docs/index.html` directly, or run a small local server:
 
 ```bash
 cd docs
 python3 -m http.server 4173
 ```
 
-브라우저에서 `http://127.0.0.1:4173/`을 열어서 확인할 수 있습니다.
+Then open `http://127.0.0.1:4173/` in your browser.
 
-## 주의사항
+## Privacy Notes
 
-- GitHub Pages에 올리는 repo가 public이면 vault의 Markdown 내용도 공개됩니다.
-- private repo에서 Pages를 쓰는 경우 GitHub 요금제와 Pages 공개 범위를 확인하세요.
-- 민감한 노트, 첨부파일, 개인 정보는 repo에 포함하지 마세요.
+- If your GitHub Pages repository is public, the Markdown content in the vault is public too.
+- If you use GitHub Pages with a private repository, check your GitHub plan and Pages visibility settings.
+- Do not include sensitive notes, attachments, or personal information in the repository.
