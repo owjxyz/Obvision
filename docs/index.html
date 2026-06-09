@@ -98,8 +98,18 @@
       line-height: 1.7;
     }
 
-    .hero-meta {
-      min-width: min(100%, 340px);
+    .action-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.15fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .action-grid .panel {
+      min-width: 0;
+    }
+
+    .selection-panel {
       display: grid;
       gap: 0.7rem;
     }
@@ -150,7 +160,12 @@
 
     .search-panel {
       display: grid;
-      gap: 0.9rem;
+      gap: 0.75rem;
+      align-content: start;
+    }
+
+    .search-panel .folder-summary {
+      margin-bottom: 0;
     }
 
     .search-form {
@@ -186,6 +201,12 @@
 
     .search-back:hover {
       text-decoration: none;
+    }
+
+    .search-meta {
+      display: grid;
+      gap: 0.7rem;
+      min-width: min(100%, 260px);
     }
 
     .search-result {
@@ -459,6 +480,7 @@
       }
 
       .control-row,
+      .action-grid,
       .section-grid,
       .search-form {
         grid-template-columns: 1fr;
@@ -472,9 +494,6 @@
         padding: 1.15rem 1.1rem 0.95rem;
       }
 
-      .hero-meta {
-        min-width: 100%;
-      }
     }
   </style>
 </head>
@@ -1196,16 +1215,18 @@
                 <p class="eyebrow">${esc(vaultLabel)} Vault</p>
                 <h1>Obsidian 읽기모드 뷰어</h1>
               </div>
-              <div class="hero-meta panel">
+            </header>
+
+            <section class="action-grid">
+              <div class="panel selection-panel">
                 <div class="control-row">
                   ${renderFolderSelect(selectedFolderName)}
                   ${renderNoteSelect(notesInFolder, note.relPathNoExt)}
                 </div>
                 <div class="subtle">현재 경로: ${esc(note.relPath)}</div>
               </div>
-            </header>
-
-            ${renderSearchPanel(query)}
+              ${renderSearchPanel(query)}
+            </section>
 
             <section class="section-grid">
               <div class="panel">
@@ -1260,7 +1281,7 @@
                 <h1>검색 결과</h1>
                 <p>${trimmed ? `${esc(trimmed)}를 포함한 노트를 전부 모아 보여줍니다.` : '검색어를 입력하면 결과가 표시됩니다.'}</p>
               </div>
-              <div class="hero-meta panel">
+              <div class="panel search-meta">
                 <a class="search-back" href="${esc(pagePath())}">홈으로</a>
                 <div class="subtle">${esc(countLabel)}</div>
               </div>
