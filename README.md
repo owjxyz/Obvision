@@ -1,5 +1,7 @@
 # Obvision 🪨
 
+### Obsidian Reading Mode on Web
+
 Obsidian vault의 Markdown 파일을 웹에서 읽기 좋게 보여주는 GitHub Pages용 뷰어입니다.
 
 문서 검색, 폴더/문서 선택, 개요, 백링크 계산을 브라우저에서 처리합니다.
