@@ -1,6 +1,12 @@
-# Obvision 🪨
+<div align="center">
+  <a href="https://github.com/owjxyz/ScreenStocker/">
+    <img src="https://github.com/owjxyz/Obvision/blob/main/docs/assets/obvision-icon.svg" width="256">
+  </a>
 
-### Obsidian Reading Mode on the Web
+# 🪨 Obvision
+</div>
+
+### Obsidian Vault Web Viewer
 
 Obvision is a lightweight GitHub Pages viewer for reading Markdown files from an Obsidian vault on the web.
 
