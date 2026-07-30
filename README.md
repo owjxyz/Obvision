@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/owjxyz/Obvision/">
+  <a href="#">
     <img src="https://github.com/owjxyz/Obvision/blob/main/docs/assets/obvision-icon.svg" width="256">
   </a>
 
