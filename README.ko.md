@@ -1,4 +1,10 @@
+<div align="center">
+  <a href="#">
+    <img src="https://github.com/owjxyz/Obvision/blob/main/docs/assets/obvision-icon.svg" width="256">
+  </a>
+
 # Obvision 🪨
+</div>
 
 ### Obsidian Reading Mode on the Web
 
