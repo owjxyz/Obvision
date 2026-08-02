@@ -1,6 +1,6 @@
 <div align="center">
   <a href="#">
-    <img src="https://github.com/owjxyz/Obvision/raw/main/docs/assets/obvision-icon.svg" width="256">
+    <img src="https://raw.githubusercontent.com/owjxyz/Obvision/main/docs/assets/obvision-icon.svg" width="256">
   </a>
 
 # Obvision 🪨
