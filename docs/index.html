@@ -305,8 +305,9 @@
 
     .note-header {
       padding: 1.45rem 1.45rem 1rem;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.72));
-      border-bottom: 1px solid var(--border);
+      /* make header and body tones closer: weaker gradient, single soft tone */
+      background: var(--panel-soft);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
     }
 
     .note-header h1 {
@@ -328,8 +329,9 @@
       padding: 1.45rem 1.5rem 1.8rem;
       font-size: 1.03rem;
       line-height: 1.8;
-      background: linear-gradient(180deg, var(--panel-strong), var(--panel-soft));
-      box-shadow: inset 6px 6px 12px rgba(0,0,0,0.03), inset -6px -6px 12px rgba(255,255,255,0.6);
+      /* weaker gradient: almost uniform to increase contrast with page background */
+      background: linear-gradient(180deg, var(--panel-strong) 0%, rgba(237, 244, 248, 0.98) 100%);
+      box-shadow: inset 4px 4px 10px rgba(0,0,0,0.02), inset -4px -4px 10px rgba(255,255,255,0.55);
       border-radius: 0 0 12px 12px;
     }
 
