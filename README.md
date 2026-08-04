@@ -1,14 +1,14 @@
 <div align="center">
   <a href="#">
-    <img src="https://raw.githubusercontent.com/owjxyz/Obvision/main/docs/assets/obvision-icon.svg" width="256">
+    <img src="https://raw.githubusercontent.com/owjxyz/Obscope/main/docs/assets/obscope-icon.svg" width="256">
   </a>
 
-# Obvision 🪨
+# Obscope 🪨
 </div>
 
 ### Obsidian Vault Web Viewer
 
-Obvision is a lightweight GitHub Pages viewer for reading Markdown files from an Obsidian vault on the web.
+Obscope is a lightweight GitHub Pages viewer for reading Markdown files from an Obsidian vault on the web.
 
 It runs entirely in the browser and provides document search, folder and note selection, an outline view, and backlink calculation without a separate build step.
 
@@ -48,7 +48,7 @@ Setup steps:
 
 ```bash
 git add docs .gitignore
-git commit -m "Set up Obvision GitHub Pages viewer"
+git commit -m "Set up Obscope GitHub Pages viewer"
 git push
 ```
 
@@ -72,10 +72,10 @@ After deployment, the site is usually available at:
 https://<github-username>.github.io/<repository-name>/
 ```
 
-For a repository named `Obvision`, the URL would look like:
+For a repository named `Obscope`, the URL would look like:
 
 ```text
-https://<github-username>.github.io/Obvision/
+https://<github-username>.github.io/Obscope/
 ```
 
 ## Local Preview

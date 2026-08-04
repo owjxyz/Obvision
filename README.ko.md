@@ -1,9 +1,9 @@
 <div align="center">
   <a href="#">
-    <img src="https://raw.githubusercontent.com/owjxyz/Obvision/main/docs/assets/obvision-icon.svg" width="256">
+    <img src="https://raw.githubusercontent.com/owjxyz/Obscope/main/docs/assets/obscope-icon.svg" width="256">
   </a>
 
-# Obvision 🪨
+# Obscope 🪨
 </div>
 
 ### Obsidian Reading Mode on the Web
@@ -38,7 +38,7 @@ your-vault/
 
 ```bash
 git add docs .gitignore
-git commit -m "Set up Obvision GitHub Pages viewer"
+git commit -m "Set up Obscope GitHub Pages viewer"
 git push
 ```
 
@@ -62,10 +62,10 @@ GitHub Pages는 `/docs` 폴더를 정적 사이트 루트로 배포하도록 설
 https://<github-username>.github.io/<repository-name>/
 ```
 
-이 repo 이름이 `Obvision`이라면 예시는 다음과 같습니다.
+이 repo 이름이 `Obscope`이라면 예시는 다음과 같습니다.
 
 ```text
-https://<github-username>.github.io/Obvision/
+https://<github-username>.github.io/Obscope/
 ```
 
 ## 로컬에서 확인
