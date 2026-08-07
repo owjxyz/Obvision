@@ -6,7 +6,7 @@
 # Obscope 🪨
 </div>
 
-### Obsidian Reading Mode on the Web
+### Obsidian Vault Web Viewer
 
 Obsidian vault의 Markdown 파일을 웹에서 읽기 좋게 보여주는 GitHub Pages용 뷰어입니다.
 
